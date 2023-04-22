@@ -3,33 +3,24 @@
 
 # Importing required libraries
 
-# In[ ]:
+# In[1]:
 
 
 import pandas as pd
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import os
 import seaborn as sns
-from scipy import stats
-import missingno as msno
-from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeRegressor
-#from google.colab import drive
+from sklearn.preprocessing import OneHotEncoder
+import matplotlib.pyplot as plt
+import joblib
 
 
 # Loading the dataset
 
-# In[ ]:
-
-
-# from google.colab import drive
-#drive.mount('/content/drive')
-
-
-# In[ ]:
+# In[3]:
 
 
 aparts_df = pd.read_csv('rent_apts.csv')
@@ -38,20 +29,20 @@ aparts_df.head()
 
 # Exploring the dataset
 
-# In[ ]:
+# In[4]:
 
 
 #Shape of the dataset, rows and columns respectively.
 aparts_df.shape
 
 
-# In[ ]:
+# In[5]:
 
 
 aparts_df.info()
 
 
-# In[ ]:
+# In[6]:
 
 
 #we see that the dataset contains 1848 entries, 
@@ -61,7 +52,7 @@ aparts_df.columns
 aparts_df.isnull().sum()
 
 
-# In[ ]:
+# In[7]:
 
 
 #the bathroom column has 291 missing values but we shall deal with it later
@@ -72,7 +63,7 @@ aparts_df.describe().T
 
 # # Data cleaning and wrangling
 
-# In[ ]:
+# In[8]:
 
 
 #the price column is an object type, we shall convert it to float
@@ -80,46 +71,46 @@ aparts_df.describe().T
 aparts_df['Price'].str.replace('KSh','',regex=True).str.replace(',','')
 
 
-# In[ ]:
+# In[9]:
 
 
 aparts_df['Price'] = aparts_df['Price'].str.replace('KSh','',regex=True).str.replace(',','').astype(float)
 
 
-# In[ ]:
+# In[10]:
 
 
 aparts_df.info()
 
 
-# In[ ]:
+# In[11]:
 
 
 #Check for null values
 aparts_df.describe().T
 
 
-# In[ ]:
+# In[12]:
 
 
 sns.heatmap(aparts_df.isnull(),yticklabels=False,cbar=False,cmap='viridis')
 
 
-# In[ ]:
+# In[13]:
 
 
 aparts_df.dropna(subset=['sq_mtrs','Bedrooms'],inplace=True)
 aparts_df.head()
 
 
-# In[ ]:
+# In[14]:
 
 
 #check for houses that have missing bathrooms as null values
 aparts_df[aparts_df['Bathrooms'].isnull()]
 
 
-# In[ ]:
+# In[15]:
 
 
 #we see the bathroom column has a good correlation with the price column
@@ -128,20 +119,20 @@ aparts_df[aparts_df['Bathrooms'].isnull()]
 aparts_df.groupby('Bedrooms')['Bathrooms'].transform(lambda x: x.fillna(round(x.mean())))
 
 
-# In[ ]:
+# In[16]:
 
 
 aparts_df['Bathrooms'] = aparts_df.groupby('Bedrooms')['Bathrooms'].transform(lambda x: x.fillna(round(x.mean())))
 
 
-# In[ ]:
+# In[17]:
 
 
 #check for missing values
 aparts_df.isnull().sum()
 
 
-# In[ ]:
+# In[18]:
 
 
 #Notice that we won't need some of the columns to train our model; those are Agency, Neighborhood, and links.
@@ -156,7 +147,7 @@ del aparts_df["link"]
 # 
 # 
 
-# In[ ]:
+# In[19]:
 
 
 #Visualize the data
@@ -164,7 +155,7 @@ del aparts_df["link"]
 sns.displot(aparts_df['Price'])
 
 
-# In[ ]:
+# In[20]:
 
 
 #we can see that the price column is right skewed
@@ -172,7 +163,7 @@ sns.displot(aparts_df['Price'])
 aparts_df[aparts_df['Price']>=200000]
 
 
-# In[ ]:
+# In[21]:
 
 
 #Notice that the houses that are outliers are somehow in the same area
@@ -180,14 +171,14 @@ aparts_df[aparts_df['Price']>=200000]
 sns.scatterplot(x='sq_mtrs',y='Price',data=aparts_df)
 
 
-# In[ ]:
+# In[22]:
 
 
 #scatterplot for price  and bedrooms colored by bathrooms
 sns.scatterplot(x='Bedrooms',y='Price',data=aparts_df,hue='Bathrooms')
 
 
-# In[ ]:
+# In[23]:
 
 
 #we notice that the houses  are expensive when they have more bedrooms and bathrooms
@@ -195,21 +186,21 @@ sns.scatterplot(x='Bedrooms',y='Price',data=aparts_df,hue='Bathrooms')
 sns.scatterplot(x='sq_mtrs',y='Price',data=aparts_df)
 
 
-# In[ ]:
+# In[24]:
 
 
 #check for houses with less than 100 sq_mtrs
 aparts_df[aparts_df['sq_mtrs']<100]
 
 
-# In[ ]:
+# In[25]:
 
 
 #check for houses with less than 100 sq_mtrs
 aparts_df[aparts_df['sq_mtrs']==0]
 
 
-# In[ ]:
+# In[26]:
 
 
 #we notice houses with 0 sq_mtrs, we shall drop them
@@ -220,20 +211,20 @@ aparts_df.drop(aparts_df[aparts_df['sq_mtrs']==0].index,inplace=True)
 # The houses with more bedrooms and bathrooms are more expensive
 # 
 
-# In[ ]:
+# In[28]:
 
 
 aparts_df.info()
 
 
-# In[ ]:
+# In[29]:
 
 
 #Lets check the scatterplot of the sq_mtrs column with price
 sns.scatterplot(x='sq_mtrs',y='Price',data=aparts_df)
 
 
-# In[ ]:
+# In[30]:
 
 
 #wee see most are less than 5000 sq_mtrs
@@ -241,28 +232,28 @@ sns.scatterplot(x='sq_mtrs',y='Price',data=aparts_df)
 sns.boxplot(x='sq_mtrs',data=aparts_df)
 
 
-# In[ ]:
+# In[31]:
 
 
 #we notice that there are outliers, we shall remove them
 aparts_df.drop(aparts_df[aparts_df['sq_mtrs']>30000].index,inplace=True)
 
 
-# In[ ]:
+# In[32]:
 
 
 #generate a pairplot on price, bedrooms, bathrooms and sq_mtrs
 sns.pairplot(aparts_df[['Price','Bedrooms','Bathrooms','sq_mtrs']])
 
 
-# In[ ]:
+# In[33]:
 
 
 #The houses with more bedrooms and bathrooms are more expensive
 #The houses with more sq_mtrs are more expensive
 
 
-# In[ ]:
+# In[34]:
 
 
 #Extract the town from neighborhood column
@@ -270,21 +261,21 @@ sns.pairplot(aparts_df[['Price','Bedrooms','Bathrooms','sq_mtrs']])
 aparts_df['Town'] = aparts_df['Neighborhood'].str.split(',').str[-1]
 
 
-# In[ ]:
+# In[35]:
 
 
 #check for the towns
 aparts_df['Town'].nunique()
 
 
-# In[ ]:
+# In[36]:
 
 
 #grouby the towns and get the mean price,plot it
 aparts_df.groupby('Town')['Price'].mean().sort_values(ascending=False).plot(kind='bar')
 
 
-# In[ ]:
+# In[37]:
 
 
 #we notice that the houses in Westlands are the most expensive
@@ -292,7 +283,7 @@ aparts_df.groupby('Town')['Price'].mean().sort_values(ascending=False).plot(kind
 aparts_df.groupby('Town')['Price'].count().sort_values(ascending=False).plot(kind='bar')
 
 
-# In[ ]:
+# In[38]:
 
 
 #most houses are in Dagoretti North and Westlands 
@@ -305,7 +296,7 @@ sns.scatterplot(x='sq_mtrs',y='Price',data=aparts_df,hue='Town')
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
 
 
-# In[ ]:
+# In[39]:
 
 
 #Summary
@@ -314,7 +305,7 @@ plt.figure(figsize=(15,12),dpi=180)
 sns.scatterplot(x='sq_mtrs',y='Price',data=aparts_df,hue='Town',legend=False)
 
 
-# In[ ]:
+# In[40]:
 
 
 #summary
@@ -327,28 +318,56 @@ aparts_df[aparts_df['Bedrooms']==aparts_df['Bedrooms'].max()]
 
 # # Set features and labels
 
-# In[ ]:
+# In[41]:
 
 
-X = aparts_df[["Bedrooms", "Bathrooms","sq_mtrs"]]
+X = aparts_df[["Bedrooms", "Bathrooms","sq_mtrs","Town"]]
 y = aparts_df[["Price"]]
 
 
 # # Define the model and train it
 
-# In[ ]:
+# In[44]:
 
 
-#Spliting the data into training and testing the set
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 20)
-#Train the regression model using the training data 
+# Extract the numerical features and categorical feature
+X_num = aparts_df[["Bedrooms", "Bathrooms", "sq_mtrs"]]
+X_cat = aparts_df[["Town"]]
+
+
+# In[46]:
+
+
+# Create an instance of the OneHotEncoder class and fit it to the categorical feature
+ohe = OneHotEncoder()
+ohe.fit(X_cat)
+
+
+# In[47]:
+
+
+# Transform the categorical feature using the fitted OneHotEncoder
+X_cat_encoded = ohe.transform(X_cat).toarray()
+
+
+# In[48]:
+
+
+# Combine the numerical and encoded categorical features
+X = np.concatenate((X_num, X_cat_encoded), axis=1)
+y = aparts_df[["Price"]]
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=20)
+
+# Train the regression model using the training data
 clf = DecisionTreeRegressor()
 clf.fit(X_train, y_train)
 
 
 # # Prediction and accuracy
 
-# In[ ]:
+# In[49]:
 
 
 #Predictions using the testing set 
@@ -363,7 +382,7 @@ y_pred = clf.predict(X_test)
 # five_pred
 
 
-# In[ ]:
+# In[50]:
 
 
 print(X_test.shape)
@@ -371,7 +390,7 @@ print(y_test.shape)
 print(y_pred.shape)
 
 
-# In[ ]:
+# In[51]:
 
 
 # print("Making predictions for the following 5 houses:")
@@ -380,7 +399,7 @@ print(y_pred.shape)
 # str(y_test[:5])
 
 
-# In[ ]:
+# In[52]:
 
 
 # #Checking the accuracy of the model using MSE,MAE and R-squared error
@@ -393,7 +412,7 @@ print('Mean absolute error: ', mean_absolute_error(y_test, y_pred))
 print('R-squared score: ', r2_score(y_test, y_pred))
 
 
-# In[ ]:
+# In[53]:
 
 
 # trying new model
@@ -407,7 +426,7 @@ clf = make_pipeline(StandardScaler(),
                      SGDRegressor(max_iter=1000, tol=1e-3, loss="squared_error"))
 
 
-# In[ ]:
+# In[54]:
 
 
 #Checking the accuracy of a model
@@ -417,7 +436,7 @@ forestScores = clf.score(X_test, y_test)
 forestScores
 
 
-# In[ ]:
+# In[55]:
 
 
 mse = mean_squared_error(y_test, y_pred)
@@ -425,12 +444,10 @@ rmse = np.sqrt(mse)
 rmse
 
 
-# In[ ]:
+# In[56]:
 
 
 #using a scatter plot to visualize how well the model is perfoming
-import matplotlib.pyplot as plt
-
 plt.scatter(y_test, y_pred)
 plt.xlabel('Actual values')
 plt.ylabel('Predicted values')
@@ -438,7 +455,7 @@ plt.title('Actual vs Predicted values')
 plt.show()
 
 
-# In[ ]:
+# In[57]:
 
 
 # from sklearn.model_selection import cross_val_score
@@ -455,7 +472,6 @@ plt.show()
 
 # In[ ]:
 
-import joblib
-joblib.dump(clf, 'house_price_prediction.joblib')
 
+joblib.dump(clf, 'house_price_prediction.joblib')
 

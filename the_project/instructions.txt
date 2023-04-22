@@ -1,8 +1,8 @@
 run "run.bat"
 then after a .py file has been generated, add the following code at the end
-"
-import joblib
 
 # Save the model
 import joblib
 joblib.dump(clf, 'house_price_prediction.joblib')
+
+run "generate.bat"
