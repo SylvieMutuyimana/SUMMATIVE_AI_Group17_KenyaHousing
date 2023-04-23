@@ -5,11 +5,10 @@ import joblib
 from sklearn.preprocessing import OneHotEncoder
 
 # Load the dataset
-data = pd.read_csv('rent_apts.csv')
-data['Town'] = data['Neighborhood'].str.split(',').str[-1]
+data = pd.read_csv('merged_dataset.csv')
 
 # Load the trained model
-clf = joblib.load('house_price_prediction.joblib')
+clf = joblib.load('the_model.joblib')
 
 # Create an instance of the OneHotEncoder class and fit it to the Town column of the dataset
 ohe = OneHotEncoder(handle_unknown='ignore')

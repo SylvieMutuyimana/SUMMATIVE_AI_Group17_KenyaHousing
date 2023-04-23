@@ -8,8 +8,8 @@ body {
 }
 
 
-section{background-color: #f5f5f5;height: 700px;width: 80%;
-  margin-left: 10%;margin-top: 10px;
+section{background-color: #f5f5f5;height: 600px;width: 70%;
+  margin-left: 15%;margin-top: 10px;
   border-radius: 5px;
   box-shadow: 0px 0px 10px #ccc;
   padding-top: 10px;
@@ -21,14 +21,14 @@ h1 {
 }
 article, aside{height:300px;margin-top: 10px;font-size: 14px;}
 /* Style for the form element */
-article{float: left;margin-left:15%;width: 30%;}
-aside{float: right;margin-right:25%;width:30%;}
+article{float: left;margin-left:15%;width: 35%;}
+aside{float: right;margin-right:20%;width:30%;}
 article img, aside form{
 width: 90%;margin-left: 5%;height: 80%;margin-top: 10%; 
 }
 aside form {
   margin-top: 0px;
-  text-align: left;width: 250px; margin-left: 30px;
+  text-align: left;width: 250px; margin-left: 50px;
 }
 
 /* Style for the label element */
@@ -89,3 +89,4 @@ th{font-weight: bold; font-size: 12px;}
 tr{
   border: #333;padding: 5px;border: 1px solid #1a1818;text-emphasis:center;
 }
+td{text-align: center;}

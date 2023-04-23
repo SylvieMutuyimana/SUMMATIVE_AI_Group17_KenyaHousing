@@ -48,10 +48,10 @@
 				</tr>
 				<tr>
 					<td>{{ town }}</td>
-					<td>{{ sq_mtrs }}</td>
+					<td>{{ '{:,.0f} '.format(sq_mtrs)}}</td>
 					<td>{{ bedrooms }}</td>
 					<td>{{ bathrooms }}</td>
-					<td>{{ price_pred }}</td>
+					<td>{{ '{:,.0f} Ksh'.format(price_pred) }}</td>
 				</tr>
 			</table>
 		</div>  

@@ -1,8 +1,8 @@
 run "run.bat"
 then after a .py file has been generated, add the following code at the end
 
-# Save the model
-import joblib
-joblib.dump(clf, 'house_price_prediction.joblib')
-
 run "generate.bat"
+then a .joblib file is generated
+run the app.py file to start the server
+if in PS ( - ./app.py)
+if in CMD (- app.py)

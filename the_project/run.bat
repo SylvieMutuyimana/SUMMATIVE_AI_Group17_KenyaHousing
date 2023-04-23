@@ -7,4 +7,4 @@ if %errorlevel% neq 0 (
 )
 pip install flask scikit-learn
 REM Run the app
-jupyter nbconvert --to script housing_in_Kenya1.ipynb
+jupyter nbconvert --to script the_model.ipynb
